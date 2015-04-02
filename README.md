@@ -11,9 +11,12 @@ License for iOS version: MIT only
 - Initial version with SQLCipher v3.2.0
 - Pre-populatd DB is NOT supported by this version.
 - Lawnchair & PouchDB have NOT been tested with this version.
+- API to open the database is expected to be changed slightly to be more streamlined. Transaction and single-statement query API will NOT be changed.
 
 ## Announcements
 
+- New project location (should redirect)
+- Discussion forum at [Ost.io / @liteglue / Cordova-sqlcipher-storage](http://ost.io/@liteglue/Cordova-sqlcipher-storage)
 - Fixes to work with PouchDB by [@nolanlawson](https://github.com/nolanlawson)
 
 ## Highlights
@@ -27,12 +30,13 @@ License for iOS version: MIT only
   - No 5MB maximum, more information at: http://www.sqlite.org/limits.html
 - Android is supported back to SDK 10 (a.k.a. Gingerbread, Android 2.3.3); Support for older versions is available upon request.
 
-## Some apps using Cordova SQLCipher adaptor
+## Some apps using Cordova sqlcipher storage plugin
 
 TBD *YOUR APP HERE*
 
 ## Known issues
 
+- Multi-page apps are not supported and known to be broken on Android.
 - Using web workers is currently not supported and known to be broken on Android.
 - Triggers are only supported for iOS, known to be broken on Android.
 - INSERT statement that affects multiple rows (due to SELECT cause or using triggers, for example) does not report proper rowsAffected on Android.
@@ -50,7 +54,7 @@ TBD *YOUR APP HERE*
 
 ## Other versions and related projects
 
-- [brodysoft / Cordova-SQLitePlugin](https://github.com/brodysoft/Cordova-SQLitePlugin) - Cordova sqlite plugin without sqlcipher, supported for more platforms.
+- [liteglue / Cordova-sqlite-storage](https://github.com/liteglue/Cordova-sqlite-storage) - Cordova sqlite storage plugin without sqlcipher, supported for more platforms.
 - [MetaMemoryT / websql-client](https://github.com/MetaMemoryT/websql-client) - provides the same API and connects to [websql-server](https://github.com/MetaMemoryT/websql-server) through WebSockets (without sqlcipher).
 - Original version for iOS without sqlcipher (with a different API): [davibe / Phonegap-SQLitePlugin](https://github.com/davibe/Phonegap-SQLitePlugin)
 
@@ -177,17 +181,17 @@ window.sqlitePlugin.deleteDatabase({name: "my.db", location: 1}, successcb, erro
 
 For Android:
 
-    plugman install --platform android --project path.to.my.project.folder --plugin https://github.com/brodysoft/Cordova-sqlcipher-adaptor
+    plugman install --platform android --project path.to.my.project.folder --plugin https://github.com/liteglue/Cordova-sqlcipher-storage
 
 For iOS:
 
-    plugman install --platform ios --project path.to.my.project.folder --plugin https://github.com/brodysoft/Cordova-sqlcipher-adaptor
+    plugman install --platform ios --project path.to.my.project.folder --plugin https://github.com/liteglue/Cordova-sqlcipher-storage
 
 ## Easy install with Cordova CLI tool
 
     npm install -g cordova # if you don't have cordova
     cordova create MyProjectFolder com.my.project MyProject && cd MyProjectFolder # if you are just starting
-    cordova plugin add https://github.com/brodysoft/Cordova-sqlcipher-adaptor
+    cordova plugin add https://github.com/liteglue/Cordova-sqlcipher-storage
 
 You can find more details at [this writeup](http://iphonedevlog.wordpress.com/2014/04/07/installing-chris-brodys-sqlite-database-with-cordova-cli-android/).
 
@@ -357,13 +361,11 @@ If you still cannot get something to work:
   - if the issue is with *adding* data to a table, that the test program includes the statements you used to open the database and create the table;
   - if the issue is with *retrieving* data from a table, that the test program includes the statements you used to open the database, create the table, and enter the data you are trying to retrieve.
 
-Then you can [raise the new issue](https://github.com/brodysoft/Cordova-sqlcipher-adaptor/issues/new).
+Then you can [raise the new issue](https://github.com/liteglue/Cordova-sqlcipher-storage/issues/new).
 
 ## Community forum
 
-If you have any questions about the plugin please post it to the [Cordova-SQLitePlugin forum](http://groups.google.com/group/Cordova-SQLitePlugin).
-
-**NOTE:** Please report all bugs at [brodysoft / Cordova-sqlcipher-adaptor / issues](https://github.com/brodysoft/Cordova-sqlcipher-adaptor/issues) so they can be tracked properly.
+If you have any questions about this plugin please post them to the [Ost.io / @liteglue / Cordova-sqlcipher-storage](http://ost.io/@liteglue/Cordova-sqlcipher-storage).
 
 # Unit tests
 
@@ -391,35 +393,33 @@ Please look at the `Lawnchair-adapter` tree that contains a common adapter, whic
 
 ### Included files
 
-Include the following js files in your html:
+Include the following Javascript files in your HTML:
 
--  lawnchair.js (you provide)
--  SQLitePlugin.js
--  Lawnchair-sqlitePlugin.js (must come after SQLitePlugin.js)
+- `cordova.js` (don't forget!)
+- `lawnchair.js` (you provide)
+- `SQLitePlugin.js` (in case of Cordova pre-3.0)
+- `Lawnchair-sqlitePlugin.js` (must come after `SQLitePlugin.js` in case of Cordova pre-3.0)
 
 ### Sample
 
-The `name` option will determine the sqlite filename. Optionally, you can change it using the `db` option.
+The `name` option will determine the sqlite database filename, *with no extension automatically added*. Optionally, you can change it using the `db` option.
 
-In this example, you would be using/creating the database at: *Documents/kvstore.sqlite3* (all db's in SQLitePlugin are in the Documents folder)
+In this example, you would be using/creating a database with filename `kvstore`:
 
-```coffee
-kvstore = new Lawnchair { name: "kvstore" }, () ->
-  # do stuff
+```Javascript
+kvstore = new Lawnchair({name: "kvstore"}, function() {
+  // do stuff
+);
 ```
 
-Using the `db` option you can create multiple stores in one sqlite file. (There will be one table per store.)
+Using the `db` option you can specify the filename with the desired extension and be able to create multiple stores in the same database file. (There will be one table per store.)
 
-```coffee
-recipes = new Lawnchair {db: "cookbook", name: "recipes", ...}
-ingredients = new Lawnchair {db: "cookbook", name: "ingredients", ...}
+```Javascript
+recipes = new Lawnchair({db: "cookbook", name: "recipes", ...}, myCallback());
+ingredients = new Lawnchair({db: "cookbook", name: "ingredients", ...}, myCallback());
 ```
 
-It also supports bgType argument:
-
-```coffee
-users = new Lawnchair {name: "users", bgType: 1, ...}
-```
+**KNOWN ISSUE:** the new db options are *not* supported by the Lawnchair adapter. The workaround is to first open the database file using `sqlitePlugin.openDatabase()`.
 
 ### PouchDB
 
@@ -430,14 +430,15 @@ The adapter is now part of [PouchDB](http://pouchdb.com/) thanks to [@nolanlawso
 **WARNING:** Please do NOT propose changes from your `master` branch. In general changes will be rebased using `git rebase` or `git cherry-pick` and not merged.
 
 - Testimonials of apps that are using this plugin would be especially helpful.
-- Reporting issues at [brodysoft / Cordova-sqlcipher-adaptor / issues](https://github.com/brodysoft/Cordova-sqlcipher-adaptor/issues) can help improve the quality of this plugin.
+- Reporting issues at [liteglue / Cordova-sqlcipher-storage / issues](https://github.com/liteglue/Cordova-sqlcipher-storage/issues) can help improve the quality of this plugin.
 - Patches with bug fixes are helpful, especially when submitted with test code.
 - Other enhancements welcome for consideration, when submitted with test code and will work for all supported platforms. Increase of complexity should be avoided.
 - All contributions may be reused by [@brodybits (Chris Brody)](https://github.com/brodybits) under another license in the future. Efforts will be taken to give credit for major contributions but it will not be guaranteed.
-- Project restructuring, i.e. moving files and/or directories around, should be avoided if possible. If you see a need for restructuring, it is best to ask first on the [Cordova-SQLitePlugin forum](http://groups.google.com/group/Cordova-SQLitePlugin) where alternatives can be discussed before reaching a conclusion. If you want to propose a change to the project structure:
+- Project restructuring, i.e. moving files and/or directories around, should be avoided if possible.
+- If you see a need for restructuring, it is the most handy to first discuss it in the forum at [Ost.io / @liteglue / Cordova-sqlcipher-storage](http://ost.io/@liteglue/Cordova-sqlcipher-storage) where alternatives can be discussed before reaching a conclusion. If you want to propose a change to the project structure:
   - Make a special branch within your fork from which you can send the proposed restructuring;
   - Always use `git mv` to move files & directories;
-  - Never mix a move/rename operation and any other changes in the same commit.
+  - Never mix a move/rename operation with any other changes in the same commit.
 
 ## Major branches
 
