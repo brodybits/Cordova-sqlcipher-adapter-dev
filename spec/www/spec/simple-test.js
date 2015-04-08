@@ -1,6 +1,6 @@
 /* 'use strict'; */
 
-var MYTIMEOUT = 4000;
+var MYTIMEOUT = 10000;
 
 var DEFAULT_SIZE = 5000000; // max to avoid popup in safari/ios
 
@@ -246,6 +246,32 @@ describe('simple tests', function() {
                 });
               });
             });
+          });
+        }, MYTIMEOUT);
+
+      it(suiteName + "column value not unique",
+        function(done) {
+          var db = openDatabase("Column-value-not-unique.db", "1.0", "Demo", DEFAULT_SIZE);
+          expect(db).toBeDefined();
+          db.transaction(function(tx) {
+            expect(tx).toBeDefined();
+            tx.executeSql('DROP TABLE IF EXISTS users');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS users (id integer PRIMARY KEY AUTOINCREMENT, user_id integer);');
+            tx.executeSql('CREATE UNIQUE INDEX users_index on users (user_id);');
+            tx.executeSql('insert into users(user_id) values (?)', [111]);
+            tx.executeSql('insert into users(user_id) values (?)', [111], function(tx, res) {
+              // not expected:
+              expect(false).toBe(true);
+              done();
+            }, function(err) {
+              // correct:
+              expect(true).toBe(true);
+              done();
+            });
+          }, function(err) {
+            // should not get here:
+            expect(false).toBe(true);
+            done();
           });
         }, MYTIMEOUT);
 
