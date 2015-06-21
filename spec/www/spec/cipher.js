@@ -155,8 +155,18 @@ describe('encryption test(s)', function() {
             }, function() {
               db.close(function () {
                 openDatabase({name: dbName, key: "another-password"}, function (db) {
-                  ok(false, 'Open DB with another-password should not have succeeded');
-                  start();
+                  // XXX [TEMP] CHECK IN Javascript:
+                  //ok(false, 'Open DB with another-password should not have succeeded');
+                  //start();
+                  db.executeSql("SELECT * from sqlite_master", [], function() {
+                    ok(false, 'Check sqlite_master after Open DB with another-password should NOT have succeeded');
+                    start();
+                  }, function (error) {
+                    // Expected/desired result:
+                    ok(true, 'DB was succesfully encrypted with test-password');
+                    start();
+                  });
+
                 }, function (error) {
                   // Expected/desired result:
                   ok(true, 'DB was succesfully encrypted with test-password');
@@ -201,7 +211,9 @@ describe('encryption test(s)', function() {
                 var db1 = openDatabase({name: dbName, key: 'test-password'});
                 db1.transaction(function(tx) {
                   // not expected (ignored):
-                  tx.executeSql('SELECT 1');
+                  // XXX [TEMP] CHECK IN Javascript:
+                  //tx.executeSql('SELECT 1');
+                  tx.executeSql("SELECT * from sqlite_master");
                 }, function(error) {
                   console.log('ERROR: ' + error.message);
                   ok(true, 'Attempted transaction on invalid db should fail');

@@ -72,6 +72,7 @@ describe('simple tests', function() {
           });
         }, MYTIMEOUT);
 
+/*
       // Only test ICU-UNICODE with Android 5.0(+):
       if (/Android [5-9]/.test(navigator.userAgent))
         it(suiteName + "ICU-UNICODE string manipulation test", function(done) {
@@ -93,6 +94,7 @@ describe('simple tests', function() {
             });
           });
         });
+*/
 
         it(suiteName + 'Simple INSERT test: check insertId & rowsAffected in result', function(done) {
 
