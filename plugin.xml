@@ -30,21 +30,9 @@
 
         <source-file src="src/android/io/liteglue/SQLitePlugin.java" target-dir="src/io/liteglue"/>
 
-        <!-- SQLiteGlue Java (sources): -->
-        <source-file src="src/android/net/sqlc/SQLCode.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLDatabaseHandle.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLGDatabaseHandle.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLStatementHandle.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLiteConnection.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLiteConnector.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLiteGlueConnection.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLiteGlueConnector.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLiteOpenFlags.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/net/sqlc/SQLiteStatement.java" target-dir="src/net/sqlc"/>
-        <source-file src="src/android/org/sqlg/SQLiteGlue.java" target-dir="src/org/sqlg"/>
-
-        <!-- SQLiteGlue NDK lib [SQLCipher distribution for Android]: -->
-        <source-file src="src/android/sqlcipher/libs/armeabi/libsqlg.so" target-dir="libs/armeabi" />
+        <!-- Android-sqlite/sqlcipher-connector: -->
+        <source-file src="src/android/libs/sqlite-native-driver.jar" target-dir="libs"/>
+        <source-file src="src/android/libs/sqlite-connector.jar" target-dir="libs"/>
 
     </platform>
 

@@ -8,8 +8,6 @@ package io.liteglue;
 
 import android.annotation.SuppressLint;
 
-import net.sqlc.*;
-
 import android.util.Base64;
 import android.util.Log;
 
@@ -59,7 +57,7 @@ public class SQLitePlugin extends CordovaPlugin {
     /**
      * SQLiteGlueConnector (instance of SQLiteConnector) for NDK version:
      */
-    static SQLiteConnector connector = new SQLiteGlueConnector();
+    static SQLiteConnector connector = new SQLiteConnector();
 
     /**
      * Override to load native lib(s).
@@ -263,7 +261,7 @@ public class SQLitePlugin extends CordovaPlugin {
 
             //mydb.keyString(key);
             if (key.length() != 0)
-              mydb.keyString(key);
+              mydb.keyNativeString(key);
 
             return mydb;
         } catch (Exception e) {
@@ -674,9 +672,7 @@ public class SQLitePlugin extends CordovaPlugin {
 
             for (int i = 0; i < paramsAsJson.length(); ++i) {
                 if (paramsAsJson.isNull(i)) {
-                    // XXX TODO really bind null:
-                    //myStatement.bindNull(i + 1);
-                    myStatement.bindTextString(i + 1, "");
+                    myStatement.bindNull(i + 1);
                 } else {
                     Object p = paramsAsJson.get(i);
                     if (p instanceof Float || p instanceof Double) 
@@ -684,7 +680,7 @@ public class SQLitePlugin extends CordovaPlugin {
                     else if (p instanceof Number) 
                         myStatement.bindLong(i + 1, paramsAsJson.getLong(i));
                     else
-                        myStatement.bindTextString(i + 1, paramsAsJson.getString(i));
+                        myStatement.bindTextNativeString(i + 1, paramsAsJson.getString(i));
                 }
             }
 
@@ -713,22 +709,22 @@ public class SQLitePlugin extends CordovaPlugin {
                         key = myStatement.getColumnName(i);
 
                         switch (myStatement.getColumnType(i)) {
-                        case 5: // SQLITE_NULL
+                        case SQLColumnType.NULL:
                             row.put(key, JSONObject.NULL);
                             break;
 
-                        case 2: // SQLITE_FLOAT
+                        case SQLColumnType.REAL:
                             row.put(key, myStatement.getColumnDouble(i));
                             break;
 
-                        case 1: // SQLITE_INTEGER
+                        case SQLColumnType.INTEGER:
                             row.put(key, myStatement.getColumnLong(i));
                             break;
 
-                        case 4: // [XXX TODO] SQLITE_BLOB
-                        case 3: // SQLITE3_TEXT
+                        case SQLColumnType.BLOB:
+                        case SQLColumnType.TEXT:
                         default: // (just in case)
-                            row.put(key, myStatement.getColumnTextString(i));
+                            row.put(key, myStatement.getColumnTextNativeString(i));
                         }
 
                     }
