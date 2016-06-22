@@ -135,6 +135,7 @@
 		<Link>
 			<SubSystem>Console</SubSystem>
 			<IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+            <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\..\..\..\deps\openssl\windows\libs\win81\arm\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
 
@@ -152,6 +153,7 @@
 		<Link>
 			<SubSystem>Console</SubSystem>
 			<IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+            <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\..\..\..\deps\openssl\windows\libs\win81\arm\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
 

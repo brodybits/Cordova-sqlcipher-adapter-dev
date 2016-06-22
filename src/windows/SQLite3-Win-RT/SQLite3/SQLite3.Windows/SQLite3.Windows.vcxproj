@@ -145,6 +145,7 @@
 			<SubSystem>Console</SubSystem>
 			<AdditionalDependencies>runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
 			<IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+            <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\..\..\..\deps\openssl\windows\libs\win81\win32\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
 
@@ -163,6 +164,7 @@
 			<SubSystem>Console</SubSystem>
 			<AdditionalDependencies>runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
 			<IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+            <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\..\..\..\deps\openssl\windows\libs\win81\win32\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
 
