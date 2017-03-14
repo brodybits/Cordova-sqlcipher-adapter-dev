@@ -888,6 +888,51 @@ var mytests = function() {
 
       });
 
+        it(suiteName + 'INSERT OR IGNORE result in case of constraint violation [WebKit Web SQL & PLUGIN report INCORRECT insertId]', function(done) {
+          var db = openDatabase('INSERT-OR-IGNORE-test.db', '1.0', 'Test', DEFAULT_SIZE);
+
+          db.transaction(function(tx) {
+            tx.executeSql('DROP TABLE IF EXISTS tt;');
+
+            tx.executeSql('CREATE TABLE tt (data1 NUMERIC, data2 TEXT UNIQUE);');
+
+            var check1 = false;
+            tx.executeSql('INSERT OR IGNORE INTO tt VALUES (?,?)', [101,'Alice'], function(ignored, rs) {
+              // CORRECT RESULT EXPECTED:
+              expect(rs).toBeDefined();
+              expect(rs.insertId).toBe(1);
+              expect(rs.rowsAffected).toBe(1);
+              check1 = true;
+            });
+
+            tx.executeSql('INSERT OR IGNORE INTO tt VALUES (?,?)', [102,'Alice'], function(ignored, rs1) {
+              expect(check1).toBe(true);
+              expect(rs1).toBeDefined();
+              // expect(rs1).toBeDefined();
+              expect(rs1.insertId).toBe(1);
+              expect(rs1.rowsAffected).toBe(0);
+
+              tx.executeSql('SELECT COUNT(*) AS MyCount FROM tt', [], function(ignored, rs2) {
+                // WebKit Web SQL & PLUGIN report INCORRECT insertId
+                expect(rs2).toBeDefined();
+                expect(rs2.rows).toBeDefined();
+                expect(rs2.rows.length).toBe(1);
+                expect(rs2.rows.item(0).MyCount).toBe(1);
+
+                // Close (plugin only - always the case in this test) & finish:
+                (isWebSql) ? done() : db.close(done, done);
+              });
+            });
+          }, function(e) {
+            // ERROR RESULT (NOT EXPECTED):
+            expect(false).toBe(true);
+            expect(e).toBeDefined();
+
+            // Close (plugin only) & finish:
+            (isWebSql) ? done() : db.close(done, done);
+          });
+        }, MYTIMEOUT);
+
       describe(suiteName + 'ALTER TABLE tests', function() {
 
         it(suiteName + 'ALTER TABLE ADD COLUMN test', function(done) {
