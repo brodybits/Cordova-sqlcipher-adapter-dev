@@ -1,7 +1,8 @@
 # Changes
 
-## cordova-sqlcipher-adapter 0.2.0-aar-wip-pre1
+## cordova-sqlcipher-adapter 0.2.0-aar+podspec-wip-pre1
 
+- podspec for iOS/???. NOTE: IN ORDER FOR THIS TO WORK THE APP DEVELOPER MUST INSTALL Cocoapods (may be easiest using brew) and then do: pod setup
 - Android aar from Maven repository
 
 ## cordova-sqlcipher-adapter 0.1.10
